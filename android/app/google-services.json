@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "165379384819",
+    "project_id": "lovi-fdfca",
+    "storage_bucket": "lovi-fdfca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165379384819:android:e706ff16a8520ed1f7de86",
+        "android_client_info": {
+          "package_name": "com.lovi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165379384819-3qcsu9pdkk4th7rvf1of34fnl9mbdo27.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXY6xGINzKnqmGuPugCWhEk_9-39t3fTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165379384819-3qcsu9pdkk4th7rvf1of34fnl9mbdo27.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
