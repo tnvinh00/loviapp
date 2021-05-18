@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, ScrollView } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
@@ -7,88 +7,124 @@ import SocialButton from '../components/SocialButton';
 import { AuthContext } from '../navigation/AuthProvider'
 
 const SignupScreen = ({ navigation }) => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [error, setError] = useState('');
 
     const { register } = useContext(AuthContext);
 
+    const handleLogin = (email, password) => {
+        setError('')
+        if (email == '' || password == '' || confirmPassword == '')
+            return setError('Vui lòng nhập đầy đủ')
+        else if (error == '') {
+            register(email, password);
+        }
+        else {
+            return setError('Vui lòng thử lại')
+        }
+    }
+
+    const handleValidation = (confirm) => {
+        if (password != confirm)
+            setError('2 mật khẩu chưa đồng nhất')
+        else if (password == confirm)
+            setError('')
+    }
+
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Create an account</Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <ScrollView>
+                <TouchableOpacity></TouchableOpacity>
+                <>
+                    <View style={styles.container}>
+                        <Text style={styles.text}>Tạo tài khoản</Text>
 
-            <FormInput
-                labelValue={email}
-                onChangeText={(userEmail) => setEmail(userEmail)}
-                placeholderText="Email"
-                iconType="user"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-            />
+                        <FormInput
+                            labelValue={email}
+                            onChangeText={(userEmail) => { setEmail(userEmail) }}
+                            placeholderText="Email"
+                            iconType="user"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                        />
 
-            <FormInput
-                labelValue={password}
-                onChangeText={(userPassword) => setPassword(userPassword)}
-                placeholderText="Password"
-                iconType="lock"
-                secureTextEntry={true}
-            />
+                        <FormInput
+                            labelValue={password}
+                            onChangeText={(userPassword) => { setPassword(userPassword) }}
+                            placeholderText="Mật khẩu"
+                            iconType="lock"
+                            secureTextEntry={true}
+                        />
 
-            <FormInput
-                labelValue={confirmPassword}
-                onChangeText={(userPassword) => setConfirmPassword(userPassword)}
-                placeholderText="Confirm Password"
-                iconType="lock"
-                secureTextEntry={true}
-            />
+                        <FormInput
+                            labelValue={confirmPassword}
+                            onChangeText={(userPassword) => { setConfirmPassword(userPassword); handleValidation(userPassword) }}
+                            placeholderText="Xác nhận mật khẩu"
+                            iconType="lock"
+                            secureTextEntry={true}
+                        />
+                        {error != '' ? (
+                            <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
+                                {error}
+                            </Text>
+                        ) : null}
 
-            <FormButton
-                buttonTitle="Sign Up"
-                onPress={() => register(email, password)}
-            />
+                        <FormButton
+                            buttonTitle="Đăng ký"
+                            onPress={() => handleLogin(email, password)}
+                        />
 
-            <View style={styles.textPrivate}>
-                <Text style={styles.color_textPrivate}>
-                    By registering, you confirm that you accept our{' '}
-                </Text>
-                <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
-                    <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
-                        Terms of service
-          </Text>
-                </TouchableOpacity>
-                <Text style={styles.color_textPrivate}> and </Text>
-                <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
-                    Privacy Policy
-        </Text>
-            </View>
+                        <View style={styles.textPrivate}>
+                            <Text style={styles.color_textPrivate}>
+                                Khi đăng ký tài khoản, bạn xác nhận đồng ý với{' '}
+                            </Text>
+                            <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
+                                <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
+                                    Điều khoản dịch vụ
+                                </Text>
+                            </TouchableOpacity>
+                            <Text style={styles.color_textPrivate}> và </Text>
+                            <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
+                                Chính sách riêng tư
+	                            <Text style={styles.color_textPrivate}> của chúng tôi </Text>
+                            </Text>
+                        </View>
 
-            {Platform.OS === 'android' ? (
-                <View>
-                    <SocialButton
-                        buttonTitle="Sign Up with Facebook"
-                        btnType="facebook"
-                        color="#4867aa"
-                        backgroundColor="#e6eaf4"
-                        onPress={() => { }}
-                    />
+                        {Platform.OS === 'android' ? (
+                            <View>
+                                <SocialButton
+                                    buttonTitle="Đăng ký bằng Facebook"
+                                    btnType="facebook"
+                                    color="#4867aa"
+                                    backgroundColor="#e6eaf4"
+                                    onPress={() => { }}
+                                />
 
-                    <SocialButton
-                        buttonTitle="Sign Up with Google"
-                        btnType="google"
-                        color="#de4d41"
-                        backgroundColor="#f5e7ea"
-                        onPress={() => { }}
-                    />
-                </View>
-            ) : null}
+                                <SocialButton
+                                    buttonTitle="Đăng ký bằng Google"
+                                    btnType="google"
+                                    color="#de4d41"
+                                    backgroundColor="#f5e7ea"
+                                    onPress={() => { }}
+                                />
+                            </View>
+                        ) : null}
 
-            <TouchableOpacity
-                style={styles.navButton}
-                onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.navButtonText}>Have an account? Sign In</Text>
-            </TouchableOpacity>
-        </View>
+                        <TouchableOpacity
+                            style={styles.navButton}
+                            onPress={() => navigation.navigate('Login')}>
+                            <Text style={styles.navButtonText}>Đã có tài khoản? Đăng nhập</Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            </ScrollView>
+
+        </SafeAreaView>
+
     );
 };
 
@@ -120,7 +156,7 @@ const styles = StyleSheet.create({
     textPrivate: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        marginVertical: 35,
+        marginVertical: 25,
         justifyContent: 'center',
     },
     color_textPrivate: {

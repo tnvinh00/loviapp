@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:165379384819:android:e706ff16a8520ed1f7de86",
+        "mobilesdk_app_id": "1:165379384819:android:66c33daff1325f9af7de86",
         "android_client_info": {
           "package_name": "com.lovi"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "165379384819-skeuibhbh088f2gcagej39ka7b1803t1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lovi",
+            "certificate_hash": "6ef398993fae6ff7519f73ad96131d2b43e4bc77"
+          }
+        },
         {
           "client_id": "165379384819-3qcsu9pdkk4th7rvf1of34fnl9mbdo27.apps.googleusercontent.com",
           "client_type": 3
