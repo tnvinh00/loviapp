@@ -121,32 +121,26 @@ export const AuthProvider = ({ children }) => {
                 register: async (email, password) => {
                     try {
                         await auth().createUserWithEmailAndPassword(email, password).then(() => {
-                            checkExsit(auth().currentUser.uid);
-                            if (check) {
-                                console.log('tao moi')
-                                firestore()
-                                    .collection('USERS')
-                                    .get()
-                                    .then(querySnapshot => {
-                                        firestore()
-                                            .collection('USERS')
-                                            .doc(auth().currentUser.uid)
-                                            .set({
-                                                name: 'user_' + (querySnapshot.size + 1).toString(),
-                                                phone: '',
-                                                country: 'Việt Nam',
-                                                aboutme: '',
-                                                city: '',
-                                                userImg: 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178'
-                                            })
-                                            .catch((e) => {
-                                                console.log(e);
-                                            })
+                            firestore()
+                                .collection('USERS')
+                                .get()
+                                .then(querySnapshot => {
+                                    firestore()
+                                        .collection('USERS')
+                                        .doc(auth().currentUser.uid)
+                                        .set({
+                                            name: 'user_' + (querySnapshot.size + 1).toString(),
+                                            phone: '',
+                                            country: 'Việt Nam',
+                                            aboutme: '',
+                                            city: '',
+                                            userImg: 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178'
+                                        })
+                                        .catch((e) => {
+                                            console.log(e);
+                                        })
 
-                                    });
-                            } else {
-                                console.log('da co');
-                            }
+                                });
                         });
                     } catch (error) {
                         if (error.code == 'auth/invalid-email')
