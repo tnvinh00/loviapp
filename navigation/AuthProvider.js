@@ -5,6 +5,7 @@ import { GoogleSignin } from '@react-native-community/google-signin';
 import firestore from '@react-native-firebase/firestore';
 import { ToastAndroid, Keyboard } from 'react-native';
 
+
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
