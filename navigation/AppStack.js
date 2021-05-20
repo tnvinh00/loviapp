@@ -15,7 +15,7 @@
 // export default AppStack;
 
 import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -57,7 +57,13 @@ const FeedStack = ({ navigation }) => (
             name="Lovi App"
             component={HomeScreen}
             options={{
+                title: '',
                 headerTitleAlign: 'center',
+                headerTitle: () => (
+                    <Image style={{ height: 60, width: 150, marginTop: 10}}
+                        source={require('../assets/lovi-logo.png')}
+                    />
+                ),
                 headerTitleStyle: {
                     color: '#2e64e5',
                     fontFamily: 'Kufam-SemiBoldItalic',

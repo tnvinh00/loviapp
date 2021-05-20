@@ -4,6 +4,7 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-community/google-signin';
 import firestore from '@react-native-firebase/firestore';
 import { ToastAndroid, Keyboard } from 'react-native';
+import { LoginManager, AccessToken } from 'react-native-fbsdk';
 
 
 export const AuthContext = createContext();
@@ -22,6 +23,8 @@ export const AuthProvider = ({ children }) => {
                     // console.log('User Data', documentSnapshot.data());
                     setCheck(true);
                 }
+                else
+                    setCheck(false);
             })
             .catch((e) => {
                 console.log(e);
@@ -82,41 +85,107 @@ export const AuthProvider = ({ children }) => {
                 },
                 googleLogin: async () => {
                     // Get the users ID token
+                    try {
+                        const { idToken } = await GoogleSignin.signIn();
 
-                    const { idToken } = await GoogleSignin.signIn();
+                        // Create a Google credential with the token
+                        const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-                    // Create a Google credential with the token
-                    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+                        // Sign-in the user with the credential
+                        return auth().signInWithCredential(googleCredential).then(() => {
+                            checkExsit(auth().currentUser.uid);
+                            if (check) {
+                                console.log('tao moi')
+                                firestore()
+                                    .collection('USERS')
+                                    .get()
+                                    .then(querySnapshot => {
+                                        firestore()
+                                            .collection('USERS')
+                                            .doc(auth().currentUser.uid)
+                                            .set({
+                                                name: auth().currentUser.displayName,
+                                                phone: auth().currentUser.phoneNumber,
+                                                country: 'Việt Nam',
+                                                aboutme: '',
+                                                city: '',
+                                                userImg: auth().currentUser.photoURL
+                                            })
+                                            .catch((e) => {
+                                                console.log(e);
+                                            })
+                                    });
+                            } else {
+                                console.log('da co');
+                            }
+                            ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
+                        });
+                    } catch (error) {
+                        console.log(error);
+                        if (error.code == 'auth/account-exists-with-different-credential')
+                            ToastAndroid.show("Email đã được sử dụng", ToastAndroid.LONG);
+                        else if (error.code == 'auth/user-disabled')
+                            ToastAndroid.show("Tài khoản bị khóa", ToastAndroid.LONG);
+                        else
+                            ToastAndroid.show(error.message, ToastAndroid.LONG);
+                    }
+                },
+                fbLogin: async () => {
+                    try {
+                        const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
-                    // Sign-in the user with the credential
-                    return auth().signInWithCredential(googleCredential).then(() => {
-                        checkExsit(auth().currentUser.uid);
-                        if (check) {
-                            console.log('tao moi')
-                            firestore()
-                                .collection('USERS')
-                                .get()
-                                .then(querySnapshot => {
-                                    firestore()
-                                        .collection('USERS')
-                                        .doc(auth().currentUser.uid)
-                                        .set({
-                                            name: auth().currentUser.displayName,
-                                            phone: auth().currentUser.phoneNumber,
-                                            country: 'Việt Nam',
-                                            aboutme: '',
-                                            city: '',
-                                            userImg: auth().currentUser.photoURL
-                                        })
-                                        .catch((e) => {
-                                            console.log(e);
-                                        })
-                                });
-                        } else {
-                            console.log('da co');
+                        if (result.isCancelled) {
+                            throw 'User cancelled the login process';
                         }
-                        ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
-                    });
+
+                        const data = await AccessToken.getCurrentAccessToken();
+
+                        if (!data) {
+                            throw 'Something went wrong obtaining access token';
+                        }
+                        const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
+
+                        return auth().signInWithCredential(facebookCredential).then(() => {
+                            console.log(auth().currentUser);
+                            checkExsit(auth().currentUser.uid);
+                            if (check) {
+                                console.log('tao moi')
+                                firestore()
+                                    .collection('USERS')
+                                    .get()
+                                    .then(querySnapshot => {
+                                        firestore()
+                                            .collection('USERS')
+                                            .doc(auth().currentUser.uid)
+                                            .set({
+                                                name: auth().currentUser.displayName,
+                                                phone: auth().currentUser.phoneNumber,
+                                                country: 'Việt Nam',
+                                                aboutme: '',
+                                                city: '',
+                                                userImg: auth().currentUser.photoURL
+                                            })
+                                            .catch((e) => {
+                                                console.log(e);
+                                            })
+                                    });
+                            } else {
+                                console.log('da co');
+                            }
+                            ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
+                        })
+                        .catch((error) => {
+                            if (error.code == 'auth/account-exists-with-different-credential')
+                                ToastAndroid.show("Email đã được sử dụng cho tài khoản khác", ToastAndroid.LONG);
+                            else if (error.code == 'auth/user-disabled')
+                                ToastAndroid.show("Tài khoản bị khóa", ToastAndroid.LONG);
+                            else
+                                ToastAndroid.show(error.message, ToastAndroid.LONG);
+                        })
+                    } catch (error) {
+                        console.log(error);
+
+                    }
                 },
                 register: async (email, password) => {
                     try {
