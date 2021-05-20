@@ -9,15 +9,13 @@ import LottieView from 'lottie-react-native';
 const SplashScreen = ({ navigation }) => {
     return (
         <View style={{ flex: 1, backgroundColor: '#F6E8D8'}}>
+            <Image style={styles.logo} source={require('../assets/lovi-logo.png')}/>
             <LottieView
                 source={require('../assets/splash/chat-love-me.json')}
                 autoPlay
                 loop={false}
-                marginTop={-135}
+                marginTop={-80}
                 speed={0.8}
-                onAnimationFinish={() => {
-                    navigation.navigate('Login');
-                }}
             />
 
         </View>
@@ -29,8 +27,9 @@ export default SplashScreen;
 const styles = StyleSheet.create({
     logo: {
         alignSelf: 'center',
-        marginTop: 100,
-        height: 150,
-        width: 150,
+        marginTop: 50,
+        resizeMode: 'cover',
+        height: 100,
+        width: 210,
     },
 });

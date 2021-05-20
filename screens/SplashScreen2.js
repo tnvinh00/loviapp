@@ -13,7 +13,7 @@ const SplashScreen2 = ({ navigation }) => {
                 source={require('../assets/splash/Ong-gia-noel.json')}
                 autoPlay
                 loop={false}
-                speed={1.0}
+                speed={1.25}
                 onAnimationFinish={() => {
                     navigation.navigate('Login');
                 }}

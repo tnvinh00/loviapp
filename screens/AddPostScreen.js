@@ -117,9 +117,9 @@ const AddPostScreen = ({ navigation }) => {
                     bottomOffset: 40,
                 });
 
-                setTimeout(() => {
-                    navigation.navigate('Lovi App');
-                }, 3000)
+                // setTimeout(() => {
+                //     navigation.navigate('Lovi App');
+                // }, 3000)
             })
             .catch((e) => {
                 console.log(e);
@@ -177,7 +177,7 @@ const AddPostScreen = ({ navigation }) => {
     
     return (
         <View style={styles.container}>
-            <Toast style={{ top: -50 }} ref={(ref) => Toast.setRef(ref)} />
+            <Toast style={{ top: -40 }} ref={(ref) => Toast.setRef(ref)} />
             <InputWrapper>
                 {image != null ? <AddImage source={{ uri: image }} /> : null}
 

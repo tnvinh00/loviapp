@@ -148,7 +148,7 @@ const HomeScreen = ({ navigation }) => {
 
     useEffect(() => {
         fetchPosts();
-    }, []);
+    }, [loading]);
 
     useEffect(() => {
         fetchPosts();

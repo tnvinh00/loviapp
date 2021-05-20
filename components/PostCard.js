@@ -90,7 +90,7 @@ const PostCard = ({ onSeePhoto, item, onDelete, onPress }) => {
     }, []);
 
     return (
-        <Card key={item.id}>
+        <Card style={{width: '100%'}} key={item.id}>
             <UserInfo>
                 <TouchableOpacity onPress={onPress}>
                     <UserImg
@@ -103,7 +103,7 @@ const PostCard = ({ onSeePhoto, item, onDelete, onPress }) => {
                 <UserInfoText>
                     <TouchableOpacity onPress={onPress}>
                         <UserName>
-                            {userData ? userData.name : 'user_0'}
+                            {userData ? userData.name : 'Đang tải ...'}
                         </UserName>
                     </TouchableOpacity>
                     <PostTime>{moment(item.postTime.toDate()).fromNow()}</PostTime>

@@ -36,91 +36,88 @@ const SignupScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ScrollView>
-                <TouchableOpacity></TouchableOpacity>
-                <>
-                    <View style={styles.container}>
-                        <Text style={styles.text}>Tạo tài khoản</Text>
+            <ScrollView keyboardShouldPersistTaps='handled'>
+                <View style={styles.container}>
+                    <Text style={styles.text}>Tạo tài khoản</Text>
 
-                        <FormInput
-                            labelValue={email}
-                            onChangeText={(userEmail) => { setEmail(userEmail) }}
-                            placeholderText="Email"
-                            iconType="user"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
+                    <FormInput
+                        labelValue={email}
+                        onChangeText={(userEmail) => { setEmail(userEmail) }}
+                        placeholderText="Email"
+                        iconType="user"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                    />
 
-                        <FormInput
-                            labelValue={password}
-                            onChangeText={(userPassword) => { setPassword(userPassword) }}
-                            placeholderText="Mật khẩu"
-                            iconType="lock"
-                            secureTextEntry={true}
-                        />
+                    <FormInput
+                        labelValue={password}
+                        onChangeText={(userPassword) => { setPassword(userPassword) }}
+                        placeholderText="Mật khẩu"
+                        iconType="lock"
+                        secureTextEntry={true}
+                    />
 
-                        <FormInput
-                            labelValue={confirmPassword}
-                            onChangeText={(userPassword) => { setConfirmPassword(userPassword); handleValidation(userPassword) }}
-                            placeholderText="Xác nhận mật khẩu"
-                            iconType="lock"
-                            secureTextEntry={true}
-                        />
-                        {error != '' ? (
-                            <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
-                                {error}
-                            </Text>
-                        ) : null}
+                    <FormInput
+                        labelValue={confirmPassword}
+                        onChangeText={(userPassword) => { setConfirmPassword(userPassword); handleValidation(userPassword) }}
+                        placeholderText="Xác nhận mật khẩu"
+                        iconType="lock"
+                        secureTextEntry={true}
+                    />
+                    {error != '' ? (
+                        <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
+                            {error}
+                        </Text>
+                    ) : null}
 
-                        <FormButton
-                            buttonTitle="Đăng ký"
-                            onPress={() => handleLogin(email, password)}
-                        />
+                    <FormButton
+                        buttonTitle="Đăng ký"
+                        onPress={() => handleLogin(email, password)}
+                    />
 
-                        <View style={styles.textPrivate}>
-                            <Text style={styles.color_textPrivate}>
-                                Khi đăng ký tài khoản, bạn xác nhận đồng ý với{' '}
-                            </Text>
-                            <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
-                                <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
-                                    Điều khoản dịch vụ
-                                </Text>
-                            </TouchableOpacity>
-                            <Text style={styles.color_textPrivate}> và </Text>
+                    <View style={styles.textPrivate}>
+                        <Text style={styles.color_textPrivate}>
+                            Khi đăng ký tài khoản, bạn xác nhận đồng ý với{' '}
+                        </Text>
+                        <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
                             <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
-                                Chính sách riêng tư
-	                            <Text style={styles.color_textPrivate}> của chúng tôi </Text>
-                            </Text>
-                        </View>
-
-                        {Platform.OS === 'android' ? (
-                            <View>
-                                <SocialButton
-                                    buttonTitle="Đăng ký bằng Facebook"
-                                    btnType="facebook"
-                                    color="#4867aa"
-                                    backgroundColor="#e6eaf4"
-                                    onPress={() => { }}
-                                />
-
-                                <SocialButton
-                                    buttonTitle="Đăng ký bằng Google"
-                                    btnType="google"
-                                    color="#de4d41"
-                                    backgroundColor="#f5e7ea"
-                                    onPress={() => { }}
-                                />
-                            </View>
-                        ) : null}
-
-                        <TouchableOpacity
-                            style={styles.navButton}
-                            onPress={() => navigation.navigate('Login')}>
-                            <Text style={styles.navButtonText}>Đã có tài khoản? Đăng nhập</Text>
+                                Điều khoản dịch vụ
+                                </Text>
                         </TouchableOpacity>
+                        <Text style={styles.color_textPrivate}> và </Text>
+                        <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
+                            Chính sách riêng tư
+	                            <Text style={styles.color_textPrivate}> của chúng tôi </Text>
+                        </Text>
                     </View>
-                </>
+
+                    {Platform.OS === 'android' ? (
+                        <View>
+                            <SocialButton
+                                buttonTitle="Đăng ký bằng Facebook"
+                                btnType="facebook"
+                                color="#4867aa"
+                                backgroundColor="#e6eaf4"
+                                onPress={() => { }}
+                            />
+
+                            <SocialButton
+                                buttonTitle="Đăng ký bằng Google"
+                                btnType="google"
+                                color="#de4d41"
+                                backgroundColor="#f5e7ea"
+                                onPress={() => { }}
+                            />
+                        </View>
+                    ) : null}
+
+                    <TouchableOpacity
+                        style={styles.navButton}
+                        onPress={() => navigation.navigate('Login')}>
+                        <Text style={styles.navButtonText}>Đã có tài khoản? Đăng nhập</Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
 
         </SafeAreaView>
