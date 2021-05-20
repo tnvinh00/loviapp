@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { View, Text, TouchableOpacity, Image, Platform, StyleSheet, ScrollView, Button, SafeAreaView, Keyboard } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Platform, StyleSheet, ScrollView, Button, SafeAreaView, Keyboard, Switch } from 'react-native';
 
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
@@ -14,7 +14,7 @@ const LoginScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const { login, googleLogin } = useContext(AuthContext);
+    const { login, googleLogin, fbLogin } = useContext(AuthContext);
 
     const handleLogin = (email, password) => {
         if (email == '' || password == '')
@@ -34,7 +34,7 @@ const LoginScreen = ({ navigation }) => {
                             source={require('../assets/rn-social-logo.png')}
                             style={styles.logo}
                         />
-                        <Text style={styles.text}>Lovi ChatApp</Text>
+                        {/* <Text style={styles.text}>Lovi ChatApp</Text> */}
                         <FormInput
                             labelValue={email}
                             onChangeText={(userEmail) => { setEmail(userEmail), setError('') }}
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
         paddingTop: 50
     },
     logo: {
-        height: 120,
-        width: 120,
+        height: 170,
+        width: 170,
         resizeMode: 'cover',
     },
     text: {
