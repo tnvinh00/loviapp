@@ -26,77 +26,74 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ScrollView>
-                <TouchableOpacity></TouchableOpacity>
-                <>
-                    <View style={styles.container}>
-                        <Image
-                            source={require('../assets/rn-social-logo.png')}
-                            style={styles.logo}
-                        />
-                        {/* <Text style={styles.text}>Lovi ChatApp</Text> */}
-                        <FormInput
-                            labelValue={email}
-                            onChangeText={(userEmail) => { setEmail(userEmail), setError('') }}
-                            placeholderText="Email"
-                            iconType="user"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
+            <ScrollView keyboardShouldPersistTaps='handled'>
+                <View style={styles.container}>
+                    <Image
+                        source={require('../assets/rn-social-logo.png')}
+                        style={styles.logo}
+                    />
+                    {/* <Text style={styles.text}>Lovi ChatApp</Text> */}
+                    <FormInput
+                        labelValue={email}
+                        onChangeText={(userEmail) => { setEmail(userEmail), setError('') }}
+                        placeholderText="Email"
+                        iconType="user"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                    />
 
-                        <FormInput
-                            labelValue={password}
-                            onChangeText={(userPassword) => { setPassword(userPassword), setError('') }}
-                            placeholderText="Mật khẩu"
-                            iconType="lock"
-                            secureTextEntry={true}
-                        />
+                    <FormInput
+                        labelValue={password}
+                        onChangeText={(userPassword) => { setPassword(userPassword), setError('') }}
+                        placeholderText="Mật khẩu"
+                        iconType="lock"
+                        secureTextEntry={true}
+                    />
 
-                        {error != '' ? (
-                            <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
-                                {error}
-                            </Text>
-                        ) : null}
-
-                        <FormButton
-                            buttonTitle="Đăng nhập"
-                            onPress={() => handleLogin(email, password)}
-                        />
-
-                        <TouchableOpacity style={styles.forgotButton} onPress={() => navigation.navigate('Forgot')}>
-                            <Text style={styles.navButtonText}>Quên mật khẩu?</Text>
-                        </TouchableOpacity>
-
-                        {Platform.OS === 'android' ? (
-                            <View>
-                                <SocialButton
-                                    buttonTitle="Đăng nhập bằng Facebook"
-                                    btnType="facebook"
-                                    color="#4867aa"
-                                    backgroundColor="#e6eaf4"
-                                    onPress={() => fbLogin()}
-                                />
-
-                                <SocialButton
-                                    buttonTitle="Đăng nhập bằng Google"
-                                    btnType="google"
-                                    color="#de4d41"
-                                    backgroundColor="#f5e7ea"
-                                    onPress={() => googleLogin()}
-                                />
-                            </View>
-                        ) : null}
-
-                        <TouchableOpacity
-                            style={styles.forgotButton}
-                            onPress={() => navigation.navigate('Signup')}>
-                            <Text style={styles.navButtonText}>
-                                Chưa có tài khoản? Đăng ký
+                    {error != '' ? (
+                        <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
+                            {error}
                         </Text>
-                        </TouchableOpacity>
-                    </View>
-                </>
+                    ) : null}
+
+                    <FormButton
+                        buttonTitle="Đăng nhập"
+                        onPress={() => handleLogin(email, password)}
+                    />
+
+                    <TouchableOpacity style={styles.forgotButton} onPress={() => navigation.navigate('Forgot')}>
+                        <Text style={styles.navButtonText}>Quên mật khẩu?</Text>
+                    </TouchableOpacity>
+
+                    {Platform.OS === 'android' ? (
+                        <View>
+                            <SocialButton
+                                buttonTitle="Đăng nhập bằng Facebook"
+                                btnType="facebook"
+                                color="#4867aa"
+                                backgroundColor="#e6eaf4"
+                                onPress={() => fbLogin()}
+                            />
+
+                            <SocialButton
+                                buttonTitle="Đăng nhập bằng Google"
+                                btnType="google"
+                                color="#de4d41"
+                                backgroundColor="#f5e7ea"
+                                onPress={() => googleLogin()}
+                            />
+                        </View>
+                    ) : null}
+
+                    <TouchableOpacity
+                        style={styles.forgotButton}
+                        onPress={() => navigation.navigate('Signup')}>
+                        <Text style={styles.navButtonText}>
+                            Chưa có tài khoản? Đăng ký
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

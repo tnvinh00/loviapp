@@ -136,40 +136,36 @@ const AddNewMessageScreen = ({ navigation, route }) => {
             else {
                 console.log('Tin nhắn đã có')
                 if (threadId != null) {
-                    await firestore()
-                        .collection('MESSAGETHREADS')
-                        .doc(threadId)
-                        .update(
-                            {
-                                latestMessage: {
-                                    text: messages,
-                                    createdAt: new Date(),
-                                    uid: user.uid,
-                                }
-                            },
-                        )
-                        .then(() => {
-                            setUid(null);
-                            setMessages(null)
-                            console.log('Đã thêm 1 latestmessage')
-                        })
-                        .catch((e) => {
-                            console.log(e);
-                        })
-                    await firestore()
-                        .collection('MESSAGETHREADS')
-                        .doc(threadId)
-                        .collection('MESSAGE')
-                        .add({
-                            text: messages,
-                            createdAt: new Date(),
-                            uid: user.uid,
-                        })
-                        .then(() => {
-                            console.log('Đã thêm 1 message')
-                            ToastAndroid.show("Đã gửi tin nhắn", ToastAndroid.LONG);
-                        })
-                    
+                    var documentRef = firestore().collection('MESSAGETHREADS').doc(threadId);
+
+                    documentRef.update(
+                        {
+                            latestMessage: {
+                                text: messages,
+                                createdAt: new Date(),
+                                uid: user.uid,
+                            }
+                        },
+                    )
+                    .then(() => {
+                        documentRef.collection('MESSAGE')
+                            .add({
+                                text: messages,
+                                createdAt: new Date(),
+                                uid: user.uid,
+                            })
+                            .then(() => {
+                                console.log('Đã gửi tin nhắn')
+                            })
+                            .catch((e) => {
+                                console.log(e);
+                                ToastAndroid.show(e.message, ToastAndroid.LONG);
+                            })
+                        setUid(null);
+                        setMessages(null)
+                        ToastAndroid.show("Đã gửi tin nhắn", ToastAndroid.LONG);
+                    })
+
                 }
                 else
                     ToastAndroid.show("Thử lại 1 lần nữa", ToastAndroid.LONG);
