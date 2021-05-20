@@ -24,54 +24,51 @@ const ForgotPasswordScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ScrollView>
-                <TouchableOpacity></TouchableOpacity>
-                <>
-                    <View style={styles.container}>
-                        <Text style={styles.text}>Quên mật khẩu</Text>
-                        <Image
-                            source={require('../assets/rn-social-logo.png')}
-                            style={styles.logo}
-                        />
-                        <View style={styles.textPrivate}>
-                            <Text style={styles.color_textPrivate}>
-                                Nhập email của bạn, chúng tôi sẽ gửi mail để nhập lại mật khẩu{' '}
-                            </Text>
-                        </View>
-                        <FormInput
-                            labelValue={email}
-                            onChangeText={(userEmail) => { setEmail(userEmail), setError('') }}
-                            placeholderText="Email"
-                            iconType="user"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-                        {error != '' ? (
-                            <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
-                                {error}
-                            </Text>
-                        ) : null}
-
-                        <FormButton
-                            buttonTitle="Xác nhận"
-                            onPress={() => handleForgot(email)}
-                        />
-                        <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity
-                                style={styles.navButton}
-                                onPress={() => navigation.navigate('Login')}>
-                                <Text style={styles.navButtonText}>Đăng nhập</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.navButton}
-                                onPress={() => navigation.navigate('Signup')}>
-                                <Text style={styles.navButtonText}>Đăng ký</Text>
-                            </TouchableOpacity>
-                        </View>
-
+            <ScrollView keyboardShouldPersistTaps='handled'>
+                <View style={styles.container}>
+                    <Text style={styles.text}>Quên mật khẩu</Text>
+                    <Image
+                        source={require('../assets/rn-social-logo.png')}
+                        style={styles.logo}
+                    />
+                    <View style={styles.textPrivate}>
+                        <Text style={styles.color_textPrivate}>
+                            Nhập email của bạn, chúng tôi sẽ gửi mail để nhập lại mật khẩu{' '}
+                        </Text>
                     </View>
-                </>
+                    <FormInput
+                        labelValue={email}
+                        onChangeText={(userEmail) => { setEmail(userEmail), setError('') }}
+                        placeholderText="Email"
+                        iconType="user"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                    />
+                    {error != '' ? (
+                        <Text style={styles.color_textPrivate, { color: '#e88832', marginVertical: 10 }}>
+                            {error}
+                        </Text>
+                    ) : null}
+
+                    <FormButton
+                        buttonTitle="Xác nhận"
+                        onPress={() => handleForgot(email)}
+                    />
+                    <View style={{ flexDirection: 'row' }}>
+                        <TouchableOpacity
+                            style={styles.navButton}
+                            onPress={() => navigation.navigate('Login')}>
+                            <Text style={styles.navButtonText}>Đăng nhập</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.navButton}
+                            onPress={() => navigation.navigate('Signup')}>
+                            <Text style={styles.navButtonText}>Đăng ký</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
             </ScrollView>
         </SafeAreaView>
     );

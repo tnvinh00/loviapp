@@ -101,24 +101,12 @@ const ChatScreen = ({ navigation, route }) => {
 
     const [messages, setMessages] = useState([]);
 
-    const handleSend = async (messages) => {
+    const handleSend = (messages) => {
         const text = messages[0].text;
-        firestore()
-            .collection('MESSAGETHREADS')
-            .doc(route.params.threadId)
-            .collection('MESSAGE')
-            .add({
-                text: text,
-                createdAt: new Date(),
-                uid: user.uid,
-            })
-            .then(() => {
-                console.log('Đã tạo message')
-            })
-        await firestore()
-            .collection('MESSAGETHREADS')
-            .doc(route.params.threadId)
-            .update(
+        if (text) {
+            var documentRef = firestore().collection('MESSAGETHREADS').doc(route.params.threadId);
+
+            documentRef.update(
                 {
                     latestMessage: {
                         text: text,
@@ -126,17 +114,29 @@ const ChatScreen = ({ navigation, route }) => {
                         uid: user.uid,
                     }
                 },
-            )
-            .then(() => {
-                console.log('Đã gửi tin nhắn')
-                // ToastAndroid.show("Đã gửi tin nhắn", ToastAndroid.LONG);
+            ).then(() => {
+                documentRef.collection('MESSAGE')
+                    .add({
+                        text: text,
+                        createdAt: new Date(),
+                        uid: user.uid,
+                    })
+                    .then(() => {
+                        console.log('Đã gửi tin nhắn')
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        ToastAndroid.show(e.message, ToastAndroid.LONG);
+                    })
             })
+
+        }
     }
 
-    const onSend = useCallback((messages = []) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-        console.log(messages);
-    }, [])
+    // const onSend = useCallback((messages = []) => {
+    //     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    //     console.log(messages);
+    // }, [])
 
     const renderSend = (props) => {
         return (
