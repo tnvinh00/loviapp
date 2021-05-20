@@ -212,9 +212,8 @@ const HomeScreen = ({ navigation }) => {
                     <Toast style={{ zIndex: 5, top: -30 }} ref={(ref) => Toast.setRef(ref)} />
                     <FlatList
                         ref={ref}
-                        width={'100%'}
                         onRefresh={() => fetchPosts()}
-                        refreshing={loading}
+                        refreshing={false}
                         data={posts}
                         renderItem={({ item }) => (
                             <PostCard

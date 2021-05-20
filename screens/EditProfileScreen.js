@@ -177,17 +177,22 @@ const EditProfileScreen = () => {
     //Delete photto if not is default
     const deletePhoto = () => {
         if (userData.userImg != 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178') {
-            const storageRef = storage().refFromURL(userData.userImg);
-            const imageRef = storage().ref(storageRef.fullPath);
+            try {
+                const storageRef = storage().refFromURL(userData.userImg);
+                const imageRef = storage().ref(storageRef.fullPath);
 
-            imageRef
-                .delete()
-                .then(() => {
-                    console.log('DELETED')
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
+                imageRef
+                    .delete()
+                    .then(() => {
+                        console.log('DELETED')
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                    });
+            } catch (error) {
+                console.log(error)
+            }
+
         }
     }
 

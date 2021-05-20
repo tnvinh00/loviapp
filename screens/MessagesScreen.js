@@ -96,9 +96,7 @@ const MessagesScreen = ({ navigation }) => {
         getUser();
     }, [loading]);
 
-    useEffect(() => {
-        getThread();
-    }, [loading2]);
+    
 
     const getThread = async () => {
         await firestore()
@@ -130,8 +128,11 @@ const MessagesScreen = ({ navigation }) => {
                     setLoading2(false)
                 }
             })
-
     }
+
+    useEffect(() => {
+        getThread();
+    }, []);
 
     if (loading2) {
         return <ActivityIndicator size='large' color='#555' />
