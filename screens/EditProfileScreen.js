@@ -238,7 +238,7 @@ const EditProfileScreen = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ScrollView>
+            <ScrollView keyboardShouldPersistTaps='handled'>
                 <View style={styles.container}>
                     <BottomSheet
                         ref={this.bs}
