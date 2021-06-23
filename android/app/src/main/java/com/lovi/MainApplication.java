@@ -14,6 +14,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.facebook.FacebookSdk;
 import androidx.multidex.MultiDexApplication;
+import com.reactnativecommunity.cameraroll.CameraRollPackage;
 
 public class MainApplication extends MultiDexApplication  implements ReactApplication {
 
