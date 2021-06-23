@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import InternetConnectionAlert from "react-native-internet-connection-alert";
 
 import auth from '@react-native-firebase/auth';
 import { AuthContext } from './AuthProvider'
@@ -26,7 +27,12 @@ const Routes = () => {
 
     return (
         <NavigationContainer>
-            { user ? <AppStack /> : < AuthStack />}
+            <InternetConnectionAlert
+                title="❕ Mất kết nối mạng"
+                message='Ứng dụng có thể bị sai, kiểm tra kết nối mạng và thử lại'
+            >
+                {user ? <AppStack /> : < AuthStack />}
+            </InternetConnectionAlert>
         </NavigationContainer>
     );
 };
