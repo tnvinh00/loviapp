@@ -13,7 +13,7 @@ import SplashScreen from './screens/SplashScreen';
 class Main extends Component {
     constructor(props) {
         super(props);
-        this.state = { current: 'Splash' }; 
+        this.state = { current: 'App' }; 
         
         setTimeout(() => {
             this.setState({ current: 'App' })
