@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
                             } else {
                                 console.log('da co');
                             }
-                            ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
+                            ToastAndroid.showWithGravity("Đăng nhập thành công", ToastAndroid.LONG, ToastAndroid.CENTER);
                         });
 
                     } catch (error) {
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }) => {
                         else if (error.code == 'auth/user-not-found')
                             ToastAndroid.show("Email không tồn tại", ToastAndroid.LONG);
                         else
-                            ToastAndroid.show(error.message, ToastAndroid.LONG);
+                            console.log(error);
                     }
                 },
                 googleLogin: async () => {
@@ -118,7 +118,7 @@ export const AuthProvider = ({ children }) => {
                             } else {
                                 console.log('da co');
                             }
-                            ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
+                            ToastAndroid.showWithGravity("Đăng nhập thành công", ToastAndroid.LONG, ToastAndroid.CENTER);
                         });
                     } catch (error) {
                         console.log(error);
@@ -127,7 +127,7 @@ export const AuthProvider = ({ children }) => {
                         else if (error.code == 'auth/user-disabled')
                             ToastAndroid.show("Tài khoản bị khóa", ToastAndroid.LONG);
                         else
-                            ToastAndroid.show(error.message, ToastAndroid.LONG);
+                            console.log(error);
                     }
                 },
                 fbLogin: async () => {
@@ -172,16 +172,16 @@ export const AuthProvider = ({ children }) => {
                             } else {
                                 console.log('da co');
                             }
-                            ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
+                            ToastAndroid.showWithGravity("Đăng nhập thành công", ToastAndroid.LONG, ToastAndroid.CENTER);
                         })
-                        .catch((error) => {
-                            if (error.code == 'auth/account-exists-with-different-credential')
-                                ToastAndroid.show("Email đã được sử dụng cho tài khoản khác", ToastAndroid.LONG);
-                            else if (error.code == 'auth/user-disabled')
-                                ToastAndroid.show("Tài khoản bị khóa", ToastAndroid.LONG);
-                            else
-                                ToastAndroid.show(error.message, ToastAndroid.LONG);
-                        })
+                            .catch((error) => {
+                                if (error.code == 'auth/account-exists-with-different-credential')
+                                    ToastAndroid.show("Email đã được sử dụng cho tài khoản khác", ToastAndroid.LONG);
+                                else if (error.code == 'auth/user-disabled')
+                                    ToastAndroid.show("Tài khoản bị khóa", ToastAndroid.LONG);
+                                else
+                                    console.log(error);
+                            })
                     } catch (error) {
                         console.log(error);
 
@@ -211,6 +211,7 @@ export const AuthProvider = ({ children }) => {
 
                                 });
                         });
+                        ToastAndroid.showWithGravity("Đăng ký thành công", ToastAndroid.LONG, ToastAndroid.CENTER);
                     } catch (error) {
                         if (error.code == 'auth/invalid-email')
                             ToastAndroid.show("Email không hợp lệ", ToastAndroid.LONG);
