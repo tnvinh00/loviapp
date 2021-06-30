@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useCallback, useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ToastAndroid } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ToastAndroid, Image, ScrollView } from 'react-native';
 
 import { AuthContext } from '../navigation/AuthProvider';
 import firestore from '@react-native-firebase/firestore';
@@ -19,6 +19,7 @@ const AddNewMessageScreen = ({ navigation, route }) => {
     const [messages, setMessages] = useState(null);
     const [check, setCheck] = useState(null); //1 if exsited message
     const [checkuid, setCheckuid] = useState(false); //true if user exsit
+    const [userData, setUserData] = useState(null);
     const [edit, setEdit] = useState(true); //false (can't edit) if route not null
     const [threadId, setThreadId] = useState(null);
 
@@ -40,6 +41,7 @@ const AddNewMessageScreen = ({ navigation, route }) => {
                 if (documentSnapshot.exists) {
                     //console.log('User Data', documentSnapshot.data());
                     console.log('Co User')
+                    setUserData(documentSnapshot.data());
                     setCheckuid(true)
                 }
                 else
@@ -147,24 +149,24 @@ const AddNewMessageScreen = ({ navigation, route }) => {
                             }
                         },
                     )
-                    .then(() => {
-                        documentRef.collection('MESSAGE')
-                            .add({
-                                text: messages,
-                                createdAt: new Date(),
-                                uid: user.uid,
-                            })
-                            .then(() => {
-                                console.log('Đã gửi tin nhắn')
-                            })
-                            .catch((e) => {
-                                console.log(e);
-                                ToastAndroid.show(e.message, ToastAndroid.LONG);
-                            })
-                        setUid(null);
-                        setMessages(null)
-                        ToastAndroid.show("Đã gửi tin nhắn", ToastAndroid.LONG);
-                    })
+                        .then(() => {
+                            documentRef.collection('MESSAGE')
+                                .add({
+                                    text: messages,
+                                    createdAt: new Date(),
+                                    uid: user.uid,
+                                })
+                                .then(() => {
+                                    console.log('Đã gửi tin nhắn')
+                                })
+                                .catch((e) => {
+                                    console.log(e);
+                                    ToastAndroid.show(e.message, ToastAndroid.LONG);
+                                })
+                            setUid(null);
+                            setMessages(null)
+                            ToastAndroid.show("Đã gửi tin nhắn", ToastAndroid.LONG);
+                        })
 
                 }
                 else
@@ -175,38 +177,49 @@ const AddNewMessageScreen = ({ navigation, route }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.container}>
-                <Text style={styles.textPrivate}>Vui lòng nhập chính xác ID người nhận</Text>
-                <Text style={styles.textPrivate}>Thử lại nếu báo không tồn tại, ứng dụng bị syda</Text>
-                <FormInput
-                    labelValue={uid}
-                    onChangeText={(uid) => { setUid(uid), checkUser(uid), checkThread(uid) }}
-                    placeholderText="ID"
-                    iconType="idcard"
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    editable={edit}
-                />
-                <FormInput
-                    labelValue={messages}
-                    onChangeText={(messages) => setMessages(messages)}
-                    placeholderText="Tin nhắn"
-                    iconType="message1"
-                    keyboardType="default"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    multiline
-                    numberOfLines={4}
-                />
-                <FormButton
-                    buttonTitle="Gửi tin nhắn"
-                    onPress={() => { handleSend(uid) }}
-                />
-            </View>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
+            <ScrollView
+                keyboardShouldPersistTaps='handled'
+                contentContainerStyle={{ flex: 1, justifyContent: 'center'}}
+            >
+                <View style={styles.container}>
+                    {!route.params ? (
+                        <Text style={styles.textPrivate}>Vui lòng nhập chính xác ID người nhận</Text>
+                    ) : null}
+                    {userData ? (
+                        <>
+                            <Image style={styles.userImg} source={{ uri: userData ? userData.userImg : 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178' }} />
+                            <Text style={styles.userName}>{userData ? userData.name : 'Đang tải ...'}</Text>
+                        </>
+                    ) : null}
+                    <FormInput
+                        labelValue={uid}
+                        onChangeText={(uid) => { setUid(uid), checkUser(uid), checkThread(uid) }}
+                        placeholderText="ID"
+                        iconType="idcard"
+                        keyboardType="default"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        editable={edit}
+                    />
+                    <FormInput
+                        labelValue={messages}
+                        onChangeText={(messages) => setMessages(messages)}
+                        placeholderText="Tin nhắn"
+                        iconType="message1"
+                        keyboardType="default"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        multiline
+                        numberOfLines={4}
+                    />
+                    <FormButton
+                        buttonTitle="Gửi tin nhắn"
+                        onPress={() => { handleSend(uid) }}
+                    />
+                </View>
+            </ScrollView>
         </SafeAreaView>
-
     );
 };
 
@@ -229,5 +242,16 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         marginVertical: 10,
         justifyContent: 'center',
+    },
+    userImg: {
+        height: 80,
+        width: 80,
+        borderRadius: 40,
+    },
+    userName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginBottom: 10,
     },
 });
