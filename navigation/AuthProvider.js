@@ -13,8 +13,8 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = React.useState(null);
     const [check, setCheck] = useState(false);
 
-    const checkExsit = async (uid) => {
-        await firestore()
+    const checkExsit = (uid) => {
+        firestore()
             .collection('USERS')
             .doc(uid)
             .get()
@@ -43,26 +43,6 @@ export const AuthProvider = ({ children }) => {
                             checkExsit(auth().currentUser.uid);
                             if (check) {
                                 console.log('tao moi')
-                                // firestore()
-                                //     .collection('USERS')
-                                //     .get()
-                                //     .then(querySnapshot => {
-                                //         firestore()
-                                //             .collection('USERS')
-                                //             .doc(auth().currentUser.uid)
-                                //             .set({
-                                //                 name: 'user_' + (querySnapshot.size + 1).toString(),
-                                //                 phone: '',
-                                //                 country: 'Việt Nam',
-                                //                 aboutme: '',
-                                //                 city: '',
-                                //                 userImg: 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178'
-                                //             })
-                                //             .catch((e) => {
-                                //                 console.log(e);
-                                //             })
-                                //         ToastAndroid.show("Đăng nhập thành công", ToastAndroid.LONG);
-                                //     });
                             } else {
                                 console.log('da co');
                             }
@@ -92,15 +72,15 @@ export const AuthProvider = ({ children }) => {
                         const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
                         // Sign-in the user with the credential
-                        return auth().signInWithCredential(googleCredential).then(() => {
+                        return auth().signInWithCredential(googleCredential).then(async () => {
                             checkExsit(auth().currentUser.uid);
                             if (check) {
                                 console.log('tao moi')
-                                firestore()
+                                await firestore()
                                     .collection('USERS')
                                     .get()
-                                    .then(querySnapshot => {
-                                        firestore()
+                                    .then(async (querySnapshot) => {
+                                        await firestore()
                                             .collection('USERS')
                                             .doc(auth().currentUser.uid)
                                             .set({
@@ -109,6 +89,7 @@ export const AuthProvider = ({ children }) => {
                                                 country: 'Việt Nam',
                                                 aboutme: '',
                                                 city: '',
+                                                notify: 0,
                                                 userImg: auth().currentUser.photoURL
                                             })
                                             .catch((e) => {
@@ -145,16 +126,16 @@ export const AuthProvider = ({ children }) => {
                         }
                         const facebookCredential = auth.FacebookAuthProvider.credential(data.accessToken);
 
-                        return auth().signInWithCredential(facebookCredential).then(() => {
+                        return auth().signInWithCredential(facebookCredential).then(async () => {
                             console.log(auth().currentUser);
                             checkExsit(auth().currentUser.uid);
                             if (check) {
                                 console.log('tao moi')
-                                firestore()
+                                await firestore()
                                     .collection('USERS')
                                     .get()
-                                    .then(querySnapshot => {
-                                        firestore()
+                                    .then(async (querySnapshot) => {
+                                        await firestore()
                                             .collection('USERS')
                                             .doc(auth().currentUser.uid)
                                             .set({
@@ -163,6 +144,7 @@ export const AuthProvider = ({ children }) => {
                                                 country: 'Việt Nam',
                                                 aboutme: '',
                                                 city: '',
+                                                notify: 0,
                                                 userImg: auth().currentUser.photoURL
                                             })
                                             .catch((e) => {
@@ -189,8 +171,8 @@ export const AuthProvider = ({ children }) => {
                 },
                 register: async (email, password) => {
                     try {
-                        await auth().createUserWithEmailAndPassword(email, password).then(() => {
-                            firestore()
+                        await auth().createUserWithEmailAndPassword(email, password).then(async() => {
+                            await firestore()
                                 .collection('USERS')
                                 .get()
                                 .then(querySnapshot => {
@@ -203,6 +185,7 @@ export const AuthProvider = ({ children }) => {
                                             country: 'Việt Nam',
                                             aboutme: '',
                                             city: '',
+                                            notify: 0,
                                             userImg: 'https://firebasestorage.googleapis.com/v0/b/lovi-fdfca.appspot.com/o/users%2Fuser.png?alt=media&token=9703fb4a-830b-4f37-9ee2-d4f2e8059178'
                                         })
                                         .catch((e) => {
