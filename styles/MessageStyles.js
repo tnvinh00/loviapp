@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { windowWidth } from '../utils/Dimentions';
 
 export const Container = styled.View`
   flex: 1;
@@ -9,6 +10,7 @@ export const Container = styled.View`
 `;
 
 export const Card = styled.TouchableOpacity`
+  margin-left: 5px;
   width: 100%;
 `;
 
@@ -28,13 +30,19 @@ export const UserImg = styled.Image`
   border-radius: 25px;
 `;
 
+export const UserImgSmall = styled.Image`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+`;
+
 export const TextSection = styled.View`
   flex-direction: column;
   justify-content: center;
   padding: 15px;
   padding-left: 0;
   margin-left: 10px;
-  width: 300px;
+  width: ${(windowWidth - 90).toString() + 'px'};
   border-bottom-width: 1px;
   border-bottom-color: #cccccc;
 `;
