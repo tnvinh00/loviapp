@@ -6,7 +6,9 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Keyboard
+    Keyboard,
+    SafeAreaView,
+    ScrollView
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -21,6 +23,7 @@ import Toast from 'react-native-toast-message';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 import HomeScreen from './HomeScreen';
+import LottieView from 'lottie-react-native';
 
 import {
     InputField,
@@ -59,7 +62,7 @@ const AddPostScreen = ({ navigation }) => {
                     text1: 'Bạn chưa chụp ảnh',
                     visibilityTime: 4000,
                     autoHide: true,
-                    topOffset: 40,
+                    topOffset: 60,
                     bottomOffset: 40,
                 });
             });
@@ -83,13 +86,29 @@ const AddPostScreen = ({ navigation }) => {
                     text1: 'Bạn chưa chọn ảnh',
                     visibilityTime: 4000,
                     autoHide: true,
-                    topOffset: 40,
+                    topOffset: 60,
                     bottomOffset: 40,
                 });
             });
     };
 
     const submitPost = async () => {
+        Keyboard.dismiss();
+        if (image == null) {
+            if (post == null) {
+                Toast.show({
+                    type: 'info',
+                    position: 'top',
+                    text1: 'Bạn chưa nhập nội dung',
+                    visibilityTime: 4000,
+                    autoHide: true,
+                    topOffset: 60,
+                    bottomOffset: 40,
+                });
+                return null;
+            }
+        }
+
         const imageUrl = await uploadImage();
         //console.log(imageUrl);
 
@@ -113,7 +132,7 @@ const AddPostScreen = ({ navigation }) => {
                     text2: 'Làm mới trang chủ để xem bài viết mới 💕',
                     visibilityTime: 4000,
                     autoHide: true,
-                    topOffset: 40,
+                    topOffset: 60,
                     bottomOffset: 40,
                 });
 
@@ -130,7 +149,7 @@ const AddPostScreen = ({ navigation }) => {
                     text2: 'Đã có lỗi xảy ra, vui lòng thử lại sau 😭',
                     visibilityTime: 4000,
                     autoHide: true,
-                    topOffset: 40,
+                    topOffset: 60,
                     bottomOffset: 40,
                 });
             })
@@ -174,46 +193,54 @@ const AddPostScreen = ({ navigation }) => {
             return null;
         }
     };
-    
-    return (
-        <View style={styles.container}>
-            <Toast style={{ top: -40 }} ref={(ref) => Toast.setRef(ref)} />
-            <InputWrapper>
-                {image != null ? <AddImage source={{ uri: image }} /> : null}
 
-                <InputField
-                    placeholder="Bạn đang nghĩ gì?"
-                    multiline
-                    numberOfLines={4}
-                    value={post}
-                    onChangeText={(content) => setPost(content)}
-                />
-                {uploading ? (
-                    <StatusWrapper>
-                        <Text>Đang tải ảnh lên {transferred}% !</Text>
-                        <ActivityIndicator size="large" color="#0000ff" />
-                    </StatusWrapper>
-                ) : (
-                    <SubmitBtn onPress={submitPost}>
-                        <SubmitBtnText>Đăng</SubmitBtnText>
-                    </SubmitBtn>
-                )}
-            </InputWrapper>
-            <ActionButton buttonColor="#2e64e5">
-                <ActionButton.Item
-                    buttonColor="#9b59b6"
-                    title="Chụp ảnh"
-                    onPress={takePhotoFromCamera}>
-                    <Icon name="camera-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-                <ActionButton.Item
-                    buttonColor="#3498db"
-                    title="Chọn ảnh"
-                    onPress={choosePhotoFromLibrary}>
-                    <Icon name="md-images-outline" style={styles.actionButtonIcon} />
-                </ActionButton.Item>
-            </ActionButton>
-        </View>
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+            <ScrollView
+                keyboardShouldPersistTaps='handled'
+                contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+            >
+                <View style={styles.container}>
+                    <Toast style={{ top: -55 }} ref={(ref) => Toast.setRef(ref)} />
+                    <InputWrapper>
+                        {image != null ? <AddImage source={{ uri: image }} /> : null}
+
+                        <InputField
+                            placeholder="Bạn đang nghĩ gì?"
+                            multiline
+                            numberOfLines={4}
+                            autoFocus={true}
+                            value={post}
+                            onChangeText={(content) => setPost(content)}
+                        />
+                        {uploading ? (
+                            <StatusWrapper>
+                                <Text>Đang tải ảnh lên {transferred}% !</Text>
+                                <LottieView style={{ height: 200 }} source={require('../assets/splash/65210-loading-colour-dots.json')} autoPlay speed={0.8} />
+                            </StatusWrapper>
+                        ) : (
+                            <SubmitBtn onPress={submitPost}>
+                                <SubmitBtnText>Đăng</SubmitBtnText>
+                            </SubmitBtn>
+                        )}
+                    </InputWrapper>
+                    <ActionButton buttonColor="#2e64e5">
+                        <ActionButton.Item
+                            buttonColor="#9b59b6"
+                            title="Chụp ảnh"
+                            onPress={takePhotoFromCamera}>
+                            <Icon name="camera-outline" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                        <ActionButton.Item
+                            buttonColor="#3498db"
+                            title="Chọn ảnh"
+                            onPress={choosePhotoFromLibrary}>
+                            <Icon name="md-images-outline" style={styles.actionButtonIcon} />
+                        </ActionButton.Item>
+                    </ActionButton>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
