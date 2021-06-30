@@ -9,6 +9,8 @@ import { Container, UserImg, UserInfo, UserInfoText, UserName } from '../styles/
 import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Bubble, GiftedChat, Send } from 'react-native-gifted-chat';
+import { StatusWrapper } from '../styles/AddPost';
+import LottieView from 'lottie-react-native';
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/vi'
@@ -47,7 +49,7 @@ const ChatScreen = ({ navigation, route }) => {
             },
             title: '',
             headerLeft: () => (
-                <View style={{ marginLeft: 20, flexDirection: 'row', flex: 1, alignItems: 'center' }}>
+                <View style={styles.header}>
                     <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={25} color="#2e64e5" />
                     </TouchableOpacity>
@@ -101,10 +103,10 @@ const ChatScreen = ({ navigation, route }) => {
 
     const [messages, setMessages] = useState([]);
 
-    const handleSend = (messages) => {
+    const handleSend = async (messages) => {
         const text = messages[0].text;
         if (text) {
-            var documentRef = firestore().collection('MESSAGETHREADS').doc(route.params.threadId);
+            var documentRef = await firestore().collection('MESSAGETHREADS').doc(route.params.threadId);
 
             documentRef.update(
                 {
@@ -126,7 +128,7 @@ const ChatScreen = ({ navigation, route }) => {
                     })
                     .catch((e) => {
                         console.log(e);
-                        ToastAndroid.show(e.message, ToastAndroid.LONG);
+                        ToastAndroid.show("Đã có lỗi, thử lại sau", ToastAndroid.LONG);
                     })
             })
 
@@ -179,7 +181,7 @@ const ChatScreen = ({ navigation, route }) => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: '#fafafa' }}>
             {userData ? (
                 <GiftedChat
                     messages={messages}
@@ -192,13 +194,17 @@ const ChatScreen = ({ navigation, route }) => {
                     renderSend={renderSend}
                     scrollToBottom
                     placeholder={'Nhập tin nhắn'}
+                    onPressAvatar={() => navigation.navigate('MessageProfile', { userId: route.params.userId })}
+                    textInputProps={{ autoFocus: true }}
                     locale={'vi'}
                     // showUserAvatar={true}
                     keyboardShouldPersistTaps={'never'}
                     scrollToBottomComponent={scrollToBottomComponent}
                 />
             ) : (
-                <ActivityIndicator size="large" color="#0000ff" />
+                <StatusWrapper>
+                    <LottieView style={{ height: 200 }} source={require('../assets/splash/65210-loading-colour-dots.json')} autoPlay speed={0.8} />
+                </StatusWrapper>
             )}
 
 
@@ -220,5 +226,10 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20,
         color: '#333333'
+    },
+    header: {
+        marginLeft: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
     }
 });
