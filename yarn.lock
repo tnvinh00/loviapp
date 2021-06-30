@@ -1158,7 +1158,7 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/netinfo/-/netinfo-6.0.0.tgz"
   "version" "6.0.0"
 
-"@react-native-firebase/app@^12.0.0", "@react-native-firebase/app@12.0.0":
+"@react-native-firebase/app@^12.0.0", "@react-native-firebase/app@12.0.0", "@react-native-firebase/app@12.1.0":
   "integrity" "sha512-ONIQUOiApnCwN/Xxnl6o9305hsuUsQaCWOp8JdlIniNM7QkkIlGqYgnvPowjEXEJVhMVME/B6NSNSidnOd/hHw=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-12.0.0.tgz"
   "version" "12.0.0"
@@ -1175,6 +1175,11 @@
   "integrity" "sha512-Js+oz1hZG0DMPYV3wLIcAWTN0vmjv4ZRlFWoUXPyVFfF7QQapnb9T6iYZ7KPnAY0lITTX1yvtkxGSnY02vkq0Q=="
   "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-12.0.0.tgz"
   "version" "12.0.0"
+
+"@react-native-firebase/messaging@^12.1.0":
+  "integrity" "sha512-8kL2Gs5N6o4aJdeoNrrYnmFvMms+H+mjj3ttlQLWobN7hy7fLCD9sbahJR9W3jzSoOb+XTaxk6Xf3PzVBBB7Mw=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/messaging/-/messaging-12.1.0.tgz"
+  "version" "12.1.0"
 
 "@react-native-firebase/storage@^12.0.0":
   "integrity" "sha512-4tg/yQHVISyPkhYeNo7UlkFUPgN8+a2sl6niAf3LEM6+ZFvD1mHUV3tbrmJArOFSMSpMZFbpEaUyM/1dHHePhw=="
