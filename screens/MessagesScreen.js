@@ -1,14 +1,13 @@
 import React, { useContext, useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, SafeAreaView, ToastAndroid } from 'react-native';
 
 import { AuthContext } from '../navigation/AuthProvider';
-import { GiftedChat } from 'react-native-gifted-chat'
 import firestore from '@react-native-firebase/firestore';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Container, Card, UserInfo, UserImgWrapper, UserImg, UserInfoText, UserName, PostTime, MessageText, TextSection } from '../styles/MessageStyles';
 import moment from 'moment';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import MessCard from '../components/MessCard';
+import LottieView from 'lottie-react-native';
+import { StatusWrapper } from '../styles/AddPost';
 
 moment.updateLocale('en', {
     relativeTime: {
@@ -36,7 +35,7 @@ const MessagesScreen = ({ navigation }) => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true)
     const [loading2, setLoading2] = useState(true)
-    const [threads, setThreads] = useState(null)
+    const [threads, setThreads] = useState([])
 
 
     const getUser = async () => {
@@ -96,7 +95,7 @@ const MessagesScreen = ({ navigation }) => {
         getUser();
     }, [loading]);
 
-    
+
 
     const getThread = async () => {
         await firestore()
@@ -123,7 +122,15 @@ const MessagesScreen = ({ navigation }) => {
                 })
 
                 setThreads(list)
-                // console.log(list)
+
+                if (threads.length) {
+                    var timesend = Date.now() - list[0].latestMessage.createdAt.toDate().getTime();
+                    if (timesend < 1000 && list[0].latestMessage.uid != user.uid) {
+                        console.log(timesend);
+                        ToastAndroid.showWithGravityAndOffset("Bạn có tin nhắn mới", ToastAndroid.LONG, ToastAndroid.TOP, 20, 160);
+                    }
+                }
+
                 if (loading2) {
                     setLoading2(false)
                 }
@@ -135,7 +142,11 @@ const MessagesScreen = ({ navigation }) => {
     }, []);
 
     if (loading2) {
-        return <ActivityIndicator size='large' color='#555' />
+        return (
+            <StatusWrapper>
+                <LottieView style={{ height: 200 }} source={require('../assets/splash/65210-loading-colour-dots.json')} autoPlay speed={0.8} />
+            </StatusWrapper>
+        )
     }
 
     const ListHeader = () => {
@@ -146,6 +157,7 @@ const MessagesScreen = ({ navigation }) => {
     return (
         <Container>
             <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+                {threads.length > 0 ? (
                     <FlatList
                         data={threads}
                         keyExtractor={(item) => item.id}
@@ -160,6 +172,9 @@ const MessagesScreen = ({ navigation }) => {
                             />
                         )}
                     />
+                ) : (
+                    <Text style={styles.text}>Bạn chưa có tin nhắn nào</Text>
+                )}
             </SafeAreaView>
 
         </Container>
@@ -177,7 +192,8 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     text: {
-        fontSize: 20,
-        color: '#333333'
+        fontSize: 16,
+        color: '#333333',
+        marginTop: 15
     }
 });
