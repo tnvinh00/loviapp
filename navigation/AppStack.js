@@ -1,19 +1,3 @@
-// import React from 'react';
-// import { createStackNavigator } from '@react-navigation/stack';
-// import HomeScreen from '../screens/HomeScreen';
-
-// const Stack = createStackNavigator();
-
-// const AppStack = () => {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen name='Home' component={HomeScreen} />
-//     </Stack.Navigator>
-//   );
-// }
-////
-// export default AppStack;
-
 import React from 'react';
 import { View, TouchableOpacity, Text, Image } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -35,21 +19,12 @@ import PhotoScreen from '../screens/PhotoScreen';
 import { UserImg, UserInfo, UserInfoText, UserName } from '../styles/FeedStyles';
 import AddNewMessageScreen from '../screens/AddNewMessageScreen';
 import SearchScreen from '../screens/SearchScreen';
+import SearchProfileScreen from '../screens/SearchProfileScreen';
+import CommentScreen from '../screens/CommentScreen';
+import NotifyScreen from '../screens/NotifyScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-
-const SplashStack = ({ navigation }) => (
-    <Stack.Navigator>
-        <Stack.Screen
-            name="Splash"
-            component={SplashScreen}
-            options={{
-                headerShown: false,
-            }}
-        />
-    </Stack.Navigator>
-);
 
 const FeedStack = ({ navigation }) => (
     <Stack.Navigator>
@@ -58,32 +33,6 @@ const FeedStack = ({ navigation }) => (
             component={HomeScreen}
             options={{
                 title: '',
-                headerTitleAlign: 'center',
-                headerTitle: () => (
-                    <Image style={{ height: 60, width: 150, marginTop: 10}}
-                        source={require('../assets/lovi-logo.png')}
-                    />
-                ),
-                headerTitleStyle: {
-                    color: '#2e64e5',
-                    fontFamily: 'Kufam-SemiBoldItalic',
-                    fontSize: 18,
-                },
-                headerStyle: {
-                    shadowColor: '#fff',
-                    elevation: 0,
-                },
-                headerRight: () => (
-                    <View style={{ marginRight: 10 }}>
-                        <FontAwesome5.Button
-                            name="plus"
-                            size={22}
-                            backgroundColor="#fff"
-                            color="#2e64e5"
-                            onPress={() => navigation.navigate('AddPost')}
-                        />
-                    </View>
-                ),
             }}
         />
         <Stack.Screen
@@ -141,13 +90,6 @@ const FeedStack = ({ navigation }) => (
                         <Ionicons name="arrow-back" size={25} color="#2e64e5" />
                     </View>
                 ),
-                headerRight: () => (
-                    <View style={{ marginRight: 25 }}>
-                        <TouchableOpacity>
-                            <Ionicons name="download-outline" size={25} color="#2e64e5" />
-                        </TouchableOpacity>
-                    </View>
-                )
             }}
         />
         <Stack.Screen
@@ -155,9 +97,80 @@ const FeedStack = ({ navigation }) => (
             component={AddNewMessageScreen}
             options={() => ({
                 headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
                 title: 'Thêm mới tin nhắn',
                 headerBackTitleVisible: false,
             })}
+        />
+        <Stack.Screen
+            name="SearchProfile"
+            component={SearchProfileScreen}
+            options={{
+                title: '',
+                headerBackTitleVisible: false,
+            }}
+        />
+        <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={({ route }) => ({
+                title: '',
+                headerBackTitleVisible: false,
+                headerRight: () => (
+                    <View style={{
+                        flexDirection: "row", justifyContent: "space-between", width: 80, marginRight: 20,
+                    }}>
+                        <TouchableOpacity>
+                            <Ionicons name="videocam" size={24} color="#2e64e5" />
+                        </TouchableOpacity>
+                        <TouchableOpacity>
+                            <Ionicons name="call" size={24} color="#2e64e5" />
+                        </TouchableOpacity>
+                    </View>
+                )
+            })}
+        />
+        <Stack.Screen
+            name="Comment"
+            component={CommentScreen}
+            options={{
+                title: 'Bình luận',
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#f6f6f6',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <View style={{ marginLeft: 15 }}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
+            }}
+        />
+        <Stack.Screen
+            name="Notify"
+            component={NotifyScreen}
+            options={{
+                title: 'Thông báo của bạn',
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <View style={{ marginLeft: 15 }}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
+            }}
         />
     </Stack.Navigator>
 );
@@ -170,11 +183,6 @@ const MessageStack = ({ navigation }) => (
             options={{
                 title: '',
                 headerTitleAlign: 'center',
-                headerStyle: {
-                    backgroundColor: '#fff',
-                    shadowColor: '#fff',
-                    elevation: 0,
-                },
                 headerBackTitleVisible: false,
                 headerRight: () => (
                     <View style={{
@@ -214,19 +222,46 @@ const MessageStack = ({ navigation }) => (
             name="AddNewMessage"
             component={AddNewMessageScreen}
             options={(route) => ({
-                headerTitleAlign: 'center',
                 title: route.params ? route.params.name : 'Thêm mới tin nhắn',
+                headerStyle: {
+                    backgroundColor: '#f6f6f6',
+                    shadowColor: '#f6f6f6',
+                    elevation: 0,
+                },
+                headerBackImage: () => (
+                    <View style={{ marginLeft: 15 }}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
                 headerBackTitleVisible: false,
             })}
         />
         <Stack.Screen
             name="Search"
             component={SearchScreen}
-            options={(route) => ({
-                headerTitleAlign: 'center',
-                title: route.params ? route.params.name : 'Thêm mới tin nhắn',
+            options={{
+                title: '',
                 headerBackTitleVisible: false,
-            })}
+            }}
+        />
+        <Stack.Screen
+            name="MessageProfile"
+            component={ProfileScreen}
+            options={{
+                title: '',
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#fff',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <View style={{ marginLeft: 15 }}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
+            }}
         />
     </Stack.Navigator>
 );
@@ -280,6 +315,25 @@ const ProfileStack = ({ navigation }) => (
                 )
             }}
         />
+        <Stack.Screen
+            name="Comment"
+            component={CommentScreen}
+            options={{
+                title: 'Bình luận',
+                headerTitleAlign: 'center',
+                headerStyle: {
+                    backgroundColor: '#f6f6f6',
+                    shadowColor: '#fff',
+                    elevation: 0,
+                },
+                headerBackTitleVisible: false,
+                headerBackImage: () => (
+                    <View style={{ marginLeft: 15 }}>
+                        <Ionicons name="arrow-back" size={25} color="#2e64e5" />
+                    </View>
+                ),
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -292,6 +346,9 @@ const AppStack = () => {
         else if (getFocusedRouteNameFromRoute(route) === 'Photo') {
             return false;
         }
+        else if (getFocusedRouteNameFromRoute(route) === 'Comment') {
+            return false;
+        }
         return true;
     };
 
@@ -301,7 +358,24 @@ const AppStack = () => {
             initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#2e64e5',
-            }}>
+            }}
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home-outline';
+                    } 
+                    else if (route.name === 'Messages') {
+                        iconName = focused ? 'chatbox-ellipses' : 'chatbox-ellipses-outline';
+                    }
+                    else if (route.name === 'Profile') {
+                        iconName = focused ? 'person' : 'person-outline';
+                    }
+
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+            })}>
             <Tab.Screen
                 name="Home"
                 component={FeedStack}
@@ -309,13 +383,13 @@ const AppStack = () => {
                     tabBarVisible: getTabBarVisibility(route),
                     tabBarLabel: 'Trang chủ',
                     // tabBarVisible: route.state && route.state.index === 0,
-                    tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                            name="home-outline"
-                            color={color}
-                            size={size}
-                        />
-                    ),
+                    // tabBarIcon: ({ color, size }) => (
+                    //     <MaterialCommunityIcons
+                    //         name="home-outline"
+                    //         color={color}
+                    //         size={size}
+                    //     />
+                    // ),
                 })}
             />
             <Tab.Screen
@@ -327,13 +401,13 @@ const AppStack = () => {
                     // https://github.com/react-navigation/react-navigation/issues/7677
                     // tabBarVisible: route.state && route.state.index === 0,
                     tabBarLabel: 'Tin nhắn',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons
-                            name="chatbox-ellipses-outline"
-                            color={color}
-                            size={size}
-                        />
-                    ),
+                    // tabBarIcon: ({ color, size }) => (
+                    //     <Ionicons
+                    //         name="chatbox-ellipses-outline"
+                    //         color={color}
+                    //         size={size}
+                    //     />
+                    // ),
                 })}
             />
             <Tab.Screen
@@ -342,9 +416,9 @@ const AppStack = () => {
                 options={({ route }) => ({
                     tabBarVisible: getTabBarVisibility(route),
                     tabBarLabel: 'Hồ sơ',
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person-outline" color={color} size={size} />
-                    ),
+                    // tabBarIcon: ({ color, size }) => (
+                    //     <Ionicons name="person-outline" color={color} size={size} />
+                    // ),
                 })}
             />
         </Tab.Navigator>
