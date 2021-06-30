@@ -11,6 +11,7 @@ import moment from 'moment';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import firestore from '@react-native-firebase/firestore';
 import { Text } from 'react-native';
+import { windowWidth } from '../utils/Dimentions';
 
 moment.updateLocale('en', {
     relativeTime: {
@@ -59,7 +60,7 @@ const MessCard = ({ item, onPress, navigation }) => {
 
 
     return (
-        <Card key={item.id} onPress={onPress}>
+        <Card style={{ width: windowWidth-20 }} key={item.id} onPress={onPress}>
             <UserInfo>
                 <UserImgWrapper>
                     <UserImg
