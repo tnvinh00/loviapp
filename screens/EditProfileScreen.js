@@ -8,7 +8,8 @@ import {
     StyleSheet,
     Alert,
     SafeAreaView,
-    ScrollView
+    ScrollView,
+    Keyboard
 } from 'react-native';
 import FormButton from '../components/FormButton';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -90,10 +91,20 @@ const EditProfileScreen = () => {
             })
             .catch((e) => {
                 console.log(e);
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Đã có lỗi xảy ra',
+                    visibilityTime: 3000,
+                    autoHide: true,
+                    topOffset: 30,
+                    bottomOffset: 40,
+                });
             })
     }
 
     const handleUpdate = async () => {
+        Keyboard.dismiss();
         let imgUrl = await uploadImage();
 
         if (imgUrl == null && userData.userImg) {
@@ -112,8 +123,10 @@ const EditProfileScreen = () => {
                 userImg: imgUrl,
             })
             .then(() => {
+                if (imgUrl != userData.userImg) {
+                    deletePhoto();
+                }
                 console.log('User Updated!');
-                deletePhoto();
                 setIsupdated(true);
                 Toast.show({
                     type: 'success',
@@ -125,6 +138,17 @@ const EditProfileScreen = () => {
                     bottomOffset: 40,
                 });
             })
+            .catch(() => {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Đã có lỗi xảy ra',
+                    visibilityTime: 3000,
+                    autoHide: true,
+                    topOffset: 30,
+                    bottomOffset: 40,
+                });
+            });
     }
 
     const uploadImage = async () => {
