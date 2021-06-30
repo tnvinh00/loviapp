@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, TouchableOpacity, Platform, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, ScrollView, Image } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import SocialButton from '../components/SocialButton';
@@ -36,10 +36,16 @@ const SignupScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-            <ScrollView keyboardShouldPersistTaps='handled'>
+            <ScrollView
+                keyboardShouldPersistTaps='handled'
+                contentContainerStyle={{ flex: 1, justifyContent: 'center'}}
+            >
                 <View style={styles.container}>
                     <Text style={styles.text}>Tạo tài khoản</Text>
-
+                    <Image
+                        source={require('../assets/rn-social-logo.png')}
+                        style={styles.logo}
+                    />
                     <FormInput
                         labelValue={email}
                         onChangeText={(userEmail) => { setEmail(userEmail) }}
@@ -83,16 +89,16 @@ const SignupScreen = ({ navigation }) => {
                         <TouchableOpacity onPress={() => alert('Terms Clicked!')}>
                             <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
                                 Điều khoản dịch vụ
-                                </Text>
+                            </Text>
                         </TouchableOpacity>
                         <Text style={styles.color_textPrivate}> và </Text>
                         <Text style={[styles.color_textPrivate, { color: '#e88832' }]}>
                             Chính sách riêng tư
-	                            <Text style={styles.color_textPrivate}> của chúng tôi </Text>
+                            <Text style={styles.color_textPrivate}> của chúng tôi </Text>
                         </Text>
                     </View>
 
-                    {Platform.OS === 'android' ? (
+                    {/* {Platform.OS === 'android' ? (
                         <View>
                             <SocialButton
                                 buttonTitle="Đăng ký bằng Facebook"
@@ -110,7 +116,7 @@ const SignupScreen = ({ navigation }) => {
                                 onPress={() => { }}
                             />
                         </View>
-                    ) : null}
+                    ) : null} */}
 
                     <TouchableOpacity
                         style={styles.navButton}
@@ -161,5 +167,10 @@ const styles = StyleSheet.create({
         fontWeight: '400',
         fontFamily: 'Lato-Regular',
         color: 'grey',
+    },
+    logo: {
+        height: 130,
+        width: 130,
+        resizeMode: 'cover',
     },
 });
