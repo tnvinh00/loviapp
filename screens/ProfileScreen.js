@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, Alert, RefreshControl, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, Image, TouchableOpacity, Alert, RefreshControl, ActivityIndicator, ToastAndroid } from 'react-native';
 import FormButton from '../components/FormButton';
 
 import { AuthContext } from '../navigation/AuthProvider';
@@ -13,6 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import LottieView from 'lottie-react-native';
 
 const ProfileScreen = ({ navigation, route }) => {
     const { user, logout } = useContext(AuthContext);
@@ -22,7 +23,10 @@ const ProfileScreen = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = React.useState(true);
     const [deleted, setDeleted] = useState(false);
     const [userData, setUserData] = useState(null);
-
+    const [currentUser, setCurrentUser] = useState(null);
+    const [folowed, setFolowed] = useState(false);
+    const [count, setCount] = useState(0);
+    const [totallike, setTotallike] = useState(0);
 
     const ref = React.useRef(null);
     useScrollToTop(ref);
@@ -30,6 +34,8 @@ const ProfileScreen = ({ navigation, route }) => {
     const fetchPosts = async () => {
         try {
             const list = [];
+            var countlike = 0;
+            setLoading(false);
 
             await firestore()
                 .collection('POSTS')
@@ -38,8 +44,21 @@ const ProfileScreen = ({ navigation, route }) => {
                 .get()
                 .then((querySnapshot) => {
                     //console.log('Total Posts: ', querySnapshot.size);
-                    querySnapshot.forEach((doc) => {
+                    querySnapshot.forEach((doc, index) => {
                         const { userId, post, postImg, postTime, likes, comments } = doc.data();
+
+                        firestore()
+                            .collection('POSTS')
+                            .doc(doc.id)
+                            .collection("LIKES")
+                            .get()
+                            .then((res) => {
+                                countlike = countlike + res.size;
+                                if (index === querySnapshot.size - 1) {
+                                    setTotallike(countlike);
+                                }
+                            });
+
                         list.push({
                             id: doc.id,
                             userId,
@@ -69,11 +88,23 @@ const ProfileScreen = ({ navigation, route }) => {
         const currentUser = await firestore()
             .collection('USERS')
             .doc(route.params ? route.params.userId : user.uid)
+            .onSnapshot((documentSnapshot) => {
+                if (documentSnapshot.exists) {
+                    //console.log('User Data', documentSnapshot.data());
+                    setUserData(documentSnapshot.data());
+                }
+            })
+    }
+
+    const getCurrentUser = async () => {
+        const currentUser = await firestore()
+            .collection('USERS')
+            .doc(user.uid)
             .get()
             .then((documentSnapshot) => {
                 if (documentSnapshot.exists) {
                     //console.log('User Data', documentSnapshot.data());
-                    setUserData(documentSnapshot.data());
+                    setCurrentUser(documentSnapshot.data());
                 }
             })
             .catch((e) => {
@@ -88,7 +119,7 @@ const ProfileScreen = ({ navigation, route }) => {
             [
                 {
                     text: 'Hủy',
-                    onPress: () => console.log('Cancel Pressed!'),
+                    // onPress: () => console.log('Cancel Pressed!'),
                     style: 'cancel',
                 },
                 {
@@ -131,7 +162,7 @@ const ProfileScreen = ({ navigation, route }) => {
                         text1: 'Xóa thành công',
                         visibilityTime: 3000,
                         autoHide: true,
-                        topOffset: 25,
+                        topOffset: 5,
                         bottomOffset: 40,
                     });
                 }
@@ -152,9 +183,162 @@ const ProfileScreen = ({ navigation, route }) => {
             })
     }
 
+    const handlePress = async (uid) => {
+        if (uid == user.uid) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Bạn không thể nhắn tin cho chính mình',
+                visibilityTime: 3000,
+                autoHide: true,
+                topOffset: 5,
+                bottomOffset: 40,
+            });
+            return null;
+        }
+        var check = 0;
+        var threadid
+        await firestore()
+            .collection('MESSAGETHREADS')
+            .where('users.id1', '==', uid)
+            .where('users.id2', '==', user.uid)
+            .get()
+            .then(querySnapshot => {
+                if (querySnapshot.size > 0) {
+                    check = check + 1;
+                    querySnapshot.forEach(documentSnapshot => {
+                        threadid = documentSnapshot.id;
+                    });
+                }
+            })
+
+        await firestore()
+            .collection('MESSAGETHREADS')
+            .where('users.id2', '==', uid)
+            .where('users.id1', '==', user.uid)
+            .get()
+            .then(querySnapshot => {
+                if (querySnapshot.size > 0) {
+                    check = check + 1;
+                    querySnapshot.forEach(documentSnapshot => {
+                        threadid = documentSnapshot.id;
+                    });
+                }
+            })
+
+        if (check == 1) {
+            navigation.navigate('Chat', { userId: uid, threadId: threadid })
+        }
+        else {
+            navigation.navigate('AddNewMessage', { uid: uid })
+        }
+    }
+
+    const onLogout = () => {
+        Alert.alert(
+            'Đăng xuất',
+            'Bạn có chắc chắn muốn đăng xuất không?',
+            [
+                {
+                    text: 'Đăng xuất',
+                    onPress: () => logout(),
+                },
+                {
+                    text: 'Hủy',
+                    // onPress: () => console.log('Cancel Pressed!'),
+                    style: 'cancel',
+                }
+            ],
+            { cancelable: false },
+        );
+    }
+
+    const handleFollow = async () => {
+        if (!folowed) {
+            await firestore()
+                .collection("USERS")
+                .doc(route.params.userId)
+                .collection("FOLOWERS")
+                .doc(user.uid)
+                .set({
+                    folow: true
+                })
+                .then(async () => {
+                    await firestore()
+                        .collection('USERS')
+                        .doc(route.params.userId)
+                        .collection('NOTIFICATIONS')
+                        .add({
+                            notification: currentUser.name + ' đã theo dõi bạn',
+                            createdAt: firestore.Timestamp.fromDate(new Date()),
+                            type: 'follow',
+                            userId: user.uid,
+                        });
+                    var getnoti = 0;
+                    await firestore()
+                        .collection('USERS')
+                        .doc(route.params.userId)
+                        .get()
+                        .then((documentSnapshot) => {
+                            if (documentSnapshot.exists) {
+                                getnoti = documentSnapshot.data().notify;
+                            }
+                        })
+                    await firestore()
+                        .collection('USERS')
+                        .doc(route.params.userId)
+                        .update({
+                            notify: getnoti + 1
+                        })
+                })
+                .catch((e) => {
+                    console.log(e);
+                    ToastAndroid.show("Đã có lỗi", ToastAndroid.LONG);
+                })
+        }
+        else {
+            await firestore()
+                .collection("USERS")
+                .doc(route.params.userId)
+                .collection("FOLOWERS")
+                .doc(user.uid)
+                .delete();
+        }
+    }
+
+    const checkFolowed = async () => {
+        await firestore()
+            .collection("USERS")
+            .doc(route.params.userId)
+            .collection("FOLOWERS")
+            .doc(user.uid)
+            .onSnapshot((documentSnapshot) => {
+                if (documentSnapshot.exists) {
+                    setFolowed(true);
+                }
+                else
+                    setFolowed(false);
+            })
+    }
+
+    const getNumOfFolow = async () => {
+        await firestore()
+            .collection("USERS")
+            .doc(route.params ? route.params.userId : user.uid)
+            .collection("FOLOWERS")
+            .onSnapshot((querySnapshot) => {
+                setCount(querySnapshot.size);
+            })
+    }
+
     useEffect(() => {
         getUser();
         fetchPosts();
+        getNumOfFolow();
+        if (route.params) {
+            getCurrentUser();
+            checkFolowed();
+        }
     }, []);
 
     useEffect(() => {
@@ -183,41 +367,59 @@ const ProfileScreen = ({ navigation, route }) => {
                 <Text style={styles.userName}>{userData ? userData.name : 'Đang tải ...'}</Text>
                 <Text style={styles.bioUser}>{userData ? userData.aboutme : ''}</Text>
                 <View style={styles.userBtnWrapper}>
-                    <Feather style={{ marginLeft: 20 }} name="phone" color="#333333" size={20} />
+                    <Feather style={{ marginLeft: 20, marginRight: 5 }} name="phone" color="#333333" size={20} />
                     <Text style={styles.aboutUser}>{userData ? userData.phone : ''}</Text>
 
-                    <MaterialCommunityIcons style={{ marginLeft: 20 }}
+                    <MaterialCommunityIcons style={{ marginLeft: 20, marginRight: 5 }}
                         name="map-marker-outline"
                         color="#333333"
                         size={20}
                     />
                     <Text style={styles.aboutUser}>{userData ? userData.city : ''}</Text>
 
-                    <FontAwesome style={{ marginLeft: 20 }} name="globe" color="#333333" size={20} />
+                    <FontAwesome style={{ marginLeft: 20, marginRight: 5 }} name="globe" color="#333333" size={20} />
                     <Text style={styles.aboutUser}>{userData ? userData.country : ''}</Text>
                 </View>
 
                 <View style={styles.userBtnWrapper}>
                     {route.params ? (
                         <>
-                            <TouchableOpacity style={styles.userBtn} onPress={() => { }}>
-                                <Text style={styles.userBtnTxt}>Theo dõi</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.userBtn} onPress={() => navigation.navigate('AddNewMessage', {uid: route.params.userId})}>
-                                <Text style={styles.userBtnTxt}>Nhắn tin</Text>
+                            {folowed ? (
+                                <TouchableOpacity style={styles.userBtn2} disabled={userData ? false : true} onPress={handleFollow}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Ionicons style={{ marginRight: 5 }} name="checkmark-circle" color="#de4d41" size={18} />
+                                        <Text style={styles.userBtnTxt2}>Đang theo dõi</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity style={styles.userBtn} disabled={userData ? false : true} onPress={handleFollow}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Ionicons style={{ marginRight: 5 }} name="person-add" color="#2e64e5" size={18} />
+                                        <Text style={styles.userBtnTxt}>Theo dõi</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )}
+                            <TouchableOpacity style={styles.userBtn} disabled={userData ? false : true} onPress={() => handlePress(route.params.userId)}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Ionicons style={{ marginRight: 5 }} name="chatbubble-ellipses" color="#2e64e5" size={18} />
+                                    <Text style={styles.userBtnTxt}>Nhắn tin</Text>
+                                </View>
                             </TouchableOpacity>
                         </>
                     ) : (
                         <>
-                            <TouchableOpacity style={styles.userBtn} onPress={() => { navigation.navigate('EditProfile') }}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <Feather style={{marginRight: 5}} name="edit" color="#2e64e5" size={15} />
+                            <TouchableOpacity style={styles.userBtn} disabled={userData ? false : true} onPress={() => { navigation.navigate('EditProfile') }}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Feather style={{ marginRight: 5 }} name="edit" color="#2e64e5" size={15} />
                                     <Text style={styles.userBtnTxt}>Chỉnh sửa hồ sơ</Text>
                                 </View>
 
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.userBtn} onPress={() => logout()}>
-                                <Text style={styles.userBtnTxt}>Đăng xuất</Text>
+                            <TouchableOpacity style={styles.userBtn2} disabled={loading} onPress={onLogout}>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Ionicons style={{ marginRight: 5 }} name="log-out-outline" color="#de4d41" size={18} />
+                                    <Text style={styles.userBtnTxt2}>Đăng xuất</Text>
+                                </View>
                             </TouchableOpacity>
                         </>
                     )}
@@ -226,30 +428,32 @@ const ProfileScreen = ({ navigation, route }) => {
                 <View style={styles.userInfoWrapper}>
                     <View style={styles.userInfoItem}>
                         <Text style={styles.userInfoTitle}>{posts.length}</Text>
-                        <Text style={styles.userInfoSubTitle}>Bài viết</Text>
+                        <Text style={styles.userInfoSubTitle}>      Bài viết      </Text>
                     </View>
                     <View style={styles.userInfoItem}>
-                        <Text style={styles.userInfoTitle}>10,000</Text>
+                        <Text style={styles.userInfoTitle}>{totallike}</Text>
+                        <Text style={styles.userInfoSubTitle}>Yêu thích</Text>
+                    </View>
+                    <View style={styles.userInfoItem}>
+                        <Text style={styles.userInfoTitle}>{count}</Text>
                         <Text style={styles.userInfoSubTitle}>Người theo dõi</Text>
-                    </View>
-                    <View style={styles.userInfoItem}>
-                        <Text style={styles.userInfoTitle}>100</Text>
-                        <Text style={styles.userInfoSubTitle}>Đang theo dõi</Text>
                     </View>
                 </View>
                 {loading ? (
                     <StatusWrapper>
-                        <ActivityIndicator size="large" color="#0000ff" />
+                        <LottieView style={{ height: 200 }} source={require('../assets/splash/65210-loading-colour-dots.json')} autoPlay speed={0.8} />
                     </StatusWrapper>
                 ) : null}
-                
+
                 {posts.map((item) => (
                     <PostCard key={item.id} item={item}
                         onDelete={handleDelete}
                         onSeePhoto={() => {
                             navigation.navigate('Photo', { postImg: item.postImg, isAva: false })
-                        }
-                        }
+                        }}
+                        onComment={() => {
+                            navigation.navigate('Comment', { postId: item.id, postUserId: item.userId, isComment: true });
+                        }}
                     />
                 ))}
             </ScrollView>
@@ -306,8 +510,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         marginHorizontal: 5,
     },
+    userBtn2: {
+        borderColor: '#de4d41',
+        borderWidth: 2,
+        borderRadius: 3,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        marginHorizontal: 5,
+    },
     userBtnTxt: {
         color: '#2e64e5',
+    },
+    userBtnTxt2: {
+        color: '#de4d41',
     },
     userInfoWrapper: {
         flexDirection: 'row',
