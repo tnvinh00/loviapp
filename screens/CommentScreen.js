@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Image, Alert, StyleSheet, SafeAreaView, Platform, Text, KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity, RefreshControl, ToastAndroid } from 'react-native';
+import { View, Image, Alert, StyleSheet, SafeAreaView, Platform, Text, KeyboardAvoidingView, ScrollView, TextInput, TouchableOpacity, RefreshControl, ToastAndroid, Keyboard } from 'react-native';
 import { AuthContext } from '../navigation/AuthProvider';
 import firestore from '@react-native-firebase/firestore';
 import Ionicons from 'react-native-vector-icons/Ionicons';
