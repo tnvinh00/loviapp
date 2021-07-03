@@ -128,6 +128,7 @@ const CommentScreen = ({ navigation, route }) => {
                             notification: currentUser.name + ' đã bình luận về bài viết của bạn: ' + input.substring(0, 20),
                             createdAt: firestore.Timestamp.fromDate(new Date()),
                             type: 'comment',
+                            read: false,
                             postId: route.params.postId,
                             postUserId: route.params.postUserId,
                         })

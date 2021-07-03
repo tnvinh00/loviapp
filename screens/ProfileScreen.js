@@ -272,6 +272,7 @@ const ProfileScreen = ({ navigation, route }) => {
                             notification: currentUser.name + ' đã theo dõi bạn',
                             createdAt: firestore.Timestamp.fromDate(new Date()),
                             type: 'follow',
+                            read: false,
                             userId: user.uid,
                         });
                     var getnoti = 0;

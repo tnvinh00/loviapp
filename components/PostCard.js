@@ -76,6 +76,7 @@ const PostCard = ({ onSeePhoto, item, username, onDelete, onPress, onComment, is
                             notification: username + ' đã yêu thích bài viết của bạn',
                             createdAt: firestore.Timestamp.fromDate(new Date()),
                             type: 'like',
+                            read: false,
                             postId: item.id,
                             postUserId: item.userId,
                         })
